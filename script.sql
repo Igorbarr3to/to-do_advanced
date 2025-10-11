@@ -1,0 +1,18 @@
+CREATE TABLE usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE tarefas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    titulo VARCHAR(50) NOT NULL,
+    descricao VARCHAR(255),
+    status enum['PENDENTE', 'CONCLUIDA'] NOT NULL,
+    data_de_criacao DATETIME,
+    data_limite DATETIME,
+    id_usuario INT NOT NULL, 
+
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
