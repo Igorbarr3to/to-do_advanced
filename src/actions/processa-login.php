@@ -9,7 +9,7 @@ $usuario_encontrado = buscarUsuarioPorEmail($db, $email);
 
 if($usuario_encontrado && password_verify($senha, $usuario_encontrado['senha'])){
     session_start();
-    $_SESSION['usuario_id'] = $usuario_encontrado['id'];
+    $_SESSION['id_usuario'] = $usuario_encontrado['id'];
     $_SESSION['usuario_nome'] = $usuario_encontrado['nome'];
     header("Location: ../../public/index.php");
     die();

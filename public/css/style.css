@@ -1,24 +1,44 @@
 body {
     height: 100vh;
     display: flex;
+    flex-direction:column;
     align-items: center;
-    justify-content: center;
 }
 
-
 :root {
-  --bs-primary: #3b657a;
-  --bs-primary-rgb: 59, 101, 122;
-  --bs-body-color: #e9f0c9;
-  --bs-body-bg: #142026;
-  --bs-tertiary-bg: #123142;
+  --bs-primary: #515151;
+  --bs-primary-rgb: 81, 81, 81;
+  --bs-body-color: #ffffff;
+  --bs-body-bg: #212121;
+  --bs-tertiary-bg: #2d2d2d;
 }
 
 .card {
   background-color: var(--bs-tertiary-bg);
-  border: 1px solid #3b657a;
+  border: 1px solid var(--bs-primary);
 }
 
 .card-header, .card-footer {
   color: var(--bs-body-color);
+  background-color: rgba(0, 0, 0, .2); 
+  border-bottom: 1px solid var(--bs-primary);
+}
+
+.card-footer {
+  border-top: 1px solid var(--bs-primary);
+  border-bottom: 0;
+}
+
+.card-footer a {
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: none;
+}
+.card-footer a:hover {
+    text-decoration: underline;
+}
+
+.form-control::placeholder {
+    color: #818186;
+    opacity: 1; 
 }

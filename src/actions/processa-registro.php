@@ -20,7 +20,7 @@ if (verificarUsuarioExistente($db, $email)) {
 try {
     $hash_senha = password_hash($senha, PASSWORD_DEFAULT);
     regitrarUsuario($db, $nome, $email, $hash_senha);
-    header('Location: ../public/login.php?sucesso=Cadastro realizado com sucesso!');
+    header('Location: ../../public/login.php?sucesso=Cadastro realizado com sucesso!');
     die();
 } catch (mysqli_sql_exception $erro) {
     header('Location:../../public/registro.php?erro=Ocorreu um erro no servidor. Tente novamente.');
