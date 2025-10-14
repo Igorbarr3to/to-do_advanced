@@ -1,6 +1,6 @@
 <?php
 
-function verificarSenha($senha, $confirmar_senha)
+function verificarSenhaRegistro($senha, $confirmar_senha)
 {
     if ($senha != $confirmar_senha) {
         return false;
@@ -32,4 +32,18 @@ function verificarUsuarioExistente($db, $email)
         return true;
     }
     return false;
+}
+
+function buscarUsuarioPorEmail($db, $email){
+    $sql = 'SELECT * FROM usuarios WHERE email = ?';
+
+    $stmt = mysqli_prepare($db, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_execute($stmt);
+
+    $resultado = mysqli_stmt_get_result($stmt);
+
+    $usuario = mysqli_fetch_assoc($resultado);
+
+    return $usuario;
 }

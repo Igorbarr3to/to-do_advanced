@@ -9,7 +9,7 @@ CREATE TABLE tarefas (
     id INT PRIMARY KEY AUTO_INCREMENT,
     titulo VARCHAR(50) NOT NULL,
     descricao VARCHAR(255),
-    status enum['PENDENTE', 'CONCLUIDA'] NOT NULL,
+    status enum('PENDENTE', 'CONCLUIDA') NOT NULL,
     data_de_criacao DATETIME,
     data_limite DATETIME,
     id_usuario INT NOT NULL, 
