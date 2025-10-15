@@ -10,8 +10,8 @@ function verificarSenhaRegistro($senha, $confirmar_senha)
 
 function regitrarUsuario($db, $nome, $email, $hash_senha)
 {
-    $registrar_usuario = 'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)';
-    $stmt = mysqli_prepare($db, $registrar_usuario);
+    $sql = 'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)';
+    $stmt = mysqli_prepare($db, $sql);
     mysqli_stmt_bind_param($stmt, "sss", $nome, $email, $hash_senha);
 
     if (mysqli_stmt_execute($stmt)) {
@@ -22,8 +22,8 @@ function regitrarUsuario($db, $nome, $email, $hash_senha)
 
 function verificarUsuarioExistente($db, $email)
 {
-    $verificar_usuario = 'SELECT id FROM usuarios WHERE email = ?';
-    $stmt = mysqli_prepare($db, $verificar_usuario);
+    $sql = 'SELECT id FROM usuarios WHERE email = ?';
+    $stmt = mysqli_prepare($db, $sql);
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_store_result($stmt);
