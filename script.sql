@@ -10,8 +10,9 @@ CREATE TABLE tarefas (
     titulo VARCHAR(50) NOT NULL,
     descricao VARCHAR(255),
     status enum('PENDENTE', 'CONCLUIDA') NOT NULL,
-    data_de_criacao DATETIME,
-    data_limite DATETIME,
+    data_de_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_limite DATE,
+    data_atualizacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     id_usuario INT NOT NULL, 
 
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
