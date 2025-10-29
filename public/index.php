@@ -4,7 +4,7 @@ require_once('../config/database.php');
 require_once('../src/lib/tarefa.php');
 
 if (!isset($_SESSION['id_usuario'])) {
-  echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário não autenticado.']);
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário não autenticado.']);
 }
 
 $usuario_nome = $_SESSION['usuario_nome'];
@@ -45,7 +45,7 @@ if (isset($_SESSION['flash_message'])) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a id="btn-logout" class="nav-link" style="cursor: pointer;" >
+                        <a id="btn-logout" class="nav-link" style="cursor: pointer;">
                             <i class="bi bi-box-arrow-right"></i> Sair
                         </a>
                     </li>
@@ -86,24 +86,27 @@ if (isset($_SESSION['flash_message'])) {
                 <h5 class="mb-0">Minhas Tarefas</h5>
             </div>
             <div class="card-body">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Título</th>
-                            <th>Criada em</th>
-                            <th>Data Limite</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-tarefas-body">
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Título</th>
+                                <th>Criada em</th>
+                                <th>Data Limite</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-tarefas-body">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
 
-    <div class="modal fade" id="modalEditarTarefa" tabindex="-1" aria-labelledby="modalEditarTarefaLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEditarTarefa" tabindex="-1" aria-labelledby="modalEditarTarefaLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,7 +114,9 @@ if (isset($_SESSION['flash_message'])) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formEditarTarefa" action="../src/actions/processa-tarefa.php?acao=editar&id=<?php echo $tarefa['id']; ?>" method="POST">
+                    <form id="formEditarTarefa"
+                        action="../src/actions/processa-tarefa.php?acao=editar&id=<?php echo $tarefa['id']; ?>"
+                        method="POST">
                         <input type="hidden" name="acao" value="editar">
                         <input type="hidden" name="id_tarefa" id="edit_id_tarefa">
 
@@ -119,15 +124,15 @@ if (isset($_SESSION['flash_message'])) {
                             <label for="edit_titulo" class="form-label">Título</label>
                             <input type="text" class="form-control" id="edit_titulo" name="titulo" required>
                         </div>
-                        <div class="d-flex w-100 gap-5">
-                            <div class="mb-3 w-100 ">
+                        <div class="d-flex flex-column flex-md-row w-100 gap-md-3">
+                            <div class="mb-">
                                 <label for="edit_status" class="form-label">Status</label>
                                 <select class="form-select" id="edit_status" name="status" required>
                                     <option value="PENDENTE">Pendente</option>
                                     <option value="CONCLUIDA">Concluída</option>
                                 </select>
                             </div>
-                            <div class="mb-3 w-100 ">
+                            <div class="mb-3">
                                 <label for="edit_data_limite" class="form-label">Data Limite</label>
                                 <input type="date" class="form-control" id="edit_data_limite" name="data_limite">
                             </div>
@@ -205,7 +210,7 @@ if (isset($_SESSION['flash_message'])) {
                                 return;
                             }
 
-                            $.each(response.tarefas, function(index, tarefa) {
+                            $.each(response.tarefas, function (index, tarefa) {
                                 let dataCriacaoFormatada = '';
                                 console.log(tarefa.data_de_criacao)
                                 if (tarefa.data_de_criacao) {
@@ -263,7 +268,7 @@ if (isset($_SESSION['flash_message'])) {
                                     <td class="align-middle">${tituloHtml}</td>
                                     <td class="align-middle">${dataCriacaoFormatada}</td>
                                     <td class="align-middle">${dataLimiteFormatada}</td>
-                                    <td class="text-center align-middle">
+                                    <td class="text-center align-middle d-flex justify-content-center gap-2">
                                         ${botaoConcluir}
                                         ${botaoEditar}
                                         ${botaoExcluir}
@@ -281,7 +286,7 @@ if (isset($_SESSION['flash_message'])) {
                 });
             }
 
-            $('#lista-tarefas-body').on('click', '.btn-concluir-ajax', function(e) {
+            $('#lista-tarefas-body').on('click', '.btn-concluir-ajax', function (e) {
 
                 e.preventDefault();
 
@@ -292,7 +297,7 @@ if (isset($_SESSION['flash_message'])) {
                     url: url,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(response) {
+                    success: function (response) {
                         if (response.sucesso) {
                             let linhaDaTarefa = botaoClicado.closest('tr');
 
@@ -308,13 +313,13 @@ if (isset($_SESSION['flash_message'])) {
                             showToast(response.mensagem, 'danger');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         showToast('Erro de comunicação com o servidor.', 'danger');
                     }
                 });
             });
 
-            $('#formNovaTarefa').on('submit', function(e) {
+            $('#formNovaTarefa').on('submit', function (e) {
                 e.preventDefault();
                 let form = $(this);
 
@@ -338,7 +343,7 @@ if (isset($_SESSION['flash_message'])) {
                 });
             });
 
-            $('#formEditarTarefa').on('submit', function(e) {
+            $('#formEditarTarefa').on('submit', function (e) {
                 e.preventDefault();
                 let form = $(this);
 
@@ -347,7 +352,7 @@ if (isset($_SESSION['flash_message'])) {
                     type: 'POST',
                     data: form.serialize(),
                     dataType: 'json',
-                    success: function(response) {
+                    success: function (response) {
                         if (response.sucesso) {
                             $('#modalEditarTarefa').modal('hide');
                             showToast(response.mensagem, 'success');
@@ -362,7 +367,7 @@ if (isset($_SESSION['flash_message'])) {
                 });
             });
 
-            $('#modalEditarTarefa').on('show.bs.modal', function(e) {
+            $('#modalEditarTarefa').on('show.bs.modal', function (e) {
                 let button = $(e.relatedTarget);
 
                 let id = button.data('id');
@@ -384,7 +389,7 @@ if (isset($_SESSION['flash_message'])) {
                 modal.find('#edit_status').val(status);
             });
 
-            $('#lista-tarefas-body').on('click', '.btn-excluir-ajax', function(e) {
+            $('#lista-tarefas-body').on('click', '.btn-excluir-ajax', function (e) {
                 e.preventDefault();
 
                 let botaoClicado = $(this);
@@ -407,11 +412,11 @@ if (isset($_SESSION['flash_message'])) {
                             url: url,
                             type: 'GET',
                             dataType: 'json',
-                            success: function(response) {
+                            success: function (response) {
                                 if (response.sucesso) {
                                     let tabelaBody = linhaDaTarefa.closest('tbody');
 
-                                    linhaDaTarefa.fadeOut(500, function() {
+                                    linhaDaTarefa.fadeOut(500, function () {
                                         $(this).remove();
 
                                         let linhasRestantes = tabelaBody.find('tr').length;
@@ -426,7 +431,7 @@ if (isset($_SESSION['flash_message'])) {
                                     showToast(response.mensagem, 'danger');
                                 }
                             },
-                            error: function() {
+                            error: function () {
                                 showToast('Erro de comunicação com o servidor.', 'danger');
                             }
                         });
@@ -434,14 +439,14 @@ if (isset($_SESSION['flash_message'])) {
                 })
             });
 
-            $('#btn-logout').on('click', function(e) {
+            $('#btn-logout').on('click', function (e) {
                 e.preventDefault();
 
                 $.ajax({
                     url: '../src/actions/processa-logout.php',
                     type: 'GET',
                     dataType: 'json',
-                    success: function(response) {
+                    success: function (response) {
                         if (response.sucesso) {
                             showToast(response.mensagem, 'success');
                             setTimeout(() => {
@@ -449,8 +454,8 @@ if (isset($_SESSION['flash_message'])) {
                             }, 2000);
                         }
                     },
-                    error: function() {
-                       window.location.href = 'login.php';
+                    error: function () {
+                        window.location.href = 'login.php';
                     }
                 });
             });
