@@ -4,8 +4,7 @@ require_once('../config/database.php');
 require_once('../src/lib/tarefa.php');
 
 if (!isset($_SESSION['id_usuario'])) {
-    header('Location: login.php?erro=Você precisa fazer login para acessar esta página.');
-    die();
+  echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário não autenticado.']);
 }
 
 $usuario_nome = $_SESSION['usuario_nome'];
@@ -46,7 +45,7 @@ if (isset($_SESSION['flash_message'])) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../src/actions/processa-logout.php">
+                        <a id="btn-logout" class="nav-link" style="cursor: pointer;" >
                             <i class="bi bi-box-arrow-right"></i> Sair
                         </a>
                     </li>
@@ -156,7 +155,6 @@ if (isset($_SESSION['flash_message'])) {
             <div class="toast-body" id="toast-body">
             </div>
         </div>
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -229,8 +227,8 @@ if (isset($_SESSION['flash_message'])) {
                                 }
 
                                 let statusBadge = (tarefa.status === 'CONCLUIDA') ?
-                                    '<span class="badge bg-success">Concluída</span>' :
-                                    '<span class="badge bg-warning">Pendente</span>';
+                                    '<span class="badge bg-success  text-bg-primary">Concluída</span>' :
+                                    '<span class="badge text-bg-warning">Pendente</span>';
 
                                 let tituloHtml = (tarefa.status === 'CONCLUIDA') ?
                                     `<s>${tarefa.titulo}</s>` :
@@ -378,8 +376,6 @@ if (isset($_SESSION['flash_message'])) {
                     dataLimiteFormatada = data_limite.split(' ')[0];
                 }
 
-                console.log("Valor lido pelo jQuery:", data_limite);
-
                 let modal = $(this);
                 modal.find('#edit_id_tarefa').val(id);
                 modal.find('#edit_titulo').val(titulo);
@@ -397,7 +393,7 @@ if (isset($_SESSION['flash_message'])) {
 
                 Swal.fire({
                     title: 'Você tem certeza?',
-                    text: "Esta ação não poderá ser revertida!",
+                    text: "Esta ação não poderá ser desfeita!",
                     theme: 'dark',
                     icon: 'warning',
                     showCancelButton: true,
@@ -436,6 +432,27 @@ if (isset($_SESSION['flash_message'])) {
                         });
                     }
                 })
+            });
+
+            $('#btn-logout').on('click', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '../src/actions/processa-logout.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.sucesso) {
+                            showToast(response.mensagem, 'success');
+                            setTimeout(() => {
+                                window.location.href = 'login.php';
+                            }, 2000);
+                        }
+                    },
+                    error: function() {
+                       window.location.href = 'login.php';
+                    }
+                });
             });
 
             listarTarefas()

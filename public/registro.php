@@ -1,15 +1,3 @@
-<?php
-$mensagem_erro = null;
-if (isset($_GET['erro'])) {
-    $mensagem_erro = htmlspecialchars($_GET['erro']);
-}
-
-$mensagem_sucesso = null;
-if (isset($_GET['sucesso'])) {
-    $mensagem_sucesso = htmlspecialchars($_GET['sucesso']);
-}
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br" data-bs-theme="dark">
 
@@ -30,33 +18,25 @@ if (isset($_GET['sucesso'])) {
                         <h3>Crie sua Conta</h3>
                     </div>
                     <div class="card-body p-4">
-                        <?php if ($mensagem_erro) : ?>
-                            <div class="alert alert-danger">
-                                <?php echo $mensagem_erro; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if ($mensagem_sucesso) : ?>
-                            <div class="alert alert-success">
-                                <?php echo $mensagem_sucesso; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <form method="post" action="../src/actions/processa-registro.php">
+                        <form method="post" id="formRegistro">
                             <div class="mb-3">
-                                <input type="text" name="nome" id="nome" placeholder="Seu nome" class="form-control" required />
+                                <input type="text" name="nome" id="nome" placeholder="Seu nome" class="form-control"
+                                    required />
                             </div>
 
                             <div class="mb-3">
-                                <input type="email" name="email" id="email" class="form-control" placeholder="E-mail" required />
+                                <input type="email" name="email" id="email" class="form-control" placeholder="E-mail"
+                                    required />
                             </div>
 
                             <div class="mb-3">
-                                <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha" required />
+                                <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha"
+                                    required />
                             </div>
 
                             <div class="mb-3">
-                                <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control" placeholder="Confirmar senha" required />
+                                <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control"
+                                    placeholder="Confirmar senha" required />
                             </div>
 
                             <div id="verifica_senha" class="mb-3"></div>
@@ -72,7 +52,17 @@ if (isset($_GET['sucesso'])) {
                         <small>Já tem uma conta? <a href="login.php" class="link-light">Faça login aqui</a></small>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="toast-container position-fixed top-0 center p-3">
+        <div id="feedbackToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toast-title">Notificação</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-body">
             </div>
         </div>
     </div>
@@ -81,8 +71,35 @@ if (isset($_GET['sucesso'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $('#senha, #confirmar_senha').on('keyup', function() {
+        $(document).ready(function () {
+            function showToast(message, type = 'success') {
+                const toastElement = document.getElementById('feedbackToast');
+                if (toastElement) {
+                    const toast = new bootstrap.Toast(toastElement, {
+                        delay: 2000
+                    });
+
+                    const toastTitle = document.getElementById('toast-title');
+                    const toastBody = document.getElementById('toast-body');
+
+                    toastElement.classList.remove('bg-success-subtle', 'bg-danger-subtle');
+                    if (type === 'success') {
+                        toastTitle.innerText = 'Sucesso!';
+                        toastElement.classList.add('bg-success-subtle');
+                    } else {
+                        toastTitle.innerText = 'Erro!';
+                        toastElement.classList.add('bg-danger-subtle');
+                    }
+
+                    toastBody.innerText = message;
+                    toast.show();
+
+                } else {
+                    alert(message);
+                }
+            }
+
+            $('#senha, #confirmar_senha').on('keyup', function () {
                 let senha = $('#senha').val();
                 let confirmarSenha = $('#confirmar_senha').val();
                 if (confirmarSenha.length > 0) {
@@ -98,7 +115,33 @@ if (isset($_GET['sucesso'])) {
                     $('button[type="submit"]').prop("disabled", false);
                 }
             })
-        })
+
+
+            $('#formRegistro').on('submit', function (e) {
+                e.preventDefault();
+                let form = $(this);
+
+                $.ajax({
+                    url: '../src/actions/processa-registro.php',
+                    type: 'POST',
+                    data: form.serialize(),
+                    dataType: 'json',
+                    success: (response) => {
+                        showToast(response.mensagem, 'success');
+                        setTimeout(() => {
+                            window.location.href = 'login.php';
+                        }, 2000);
+                    },
+                    error: function (jqXHR) {
+                        let mensagem = 'Erro ao processar o registo.';
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.mensagem) {
+                            mensagem = jqXHR.responseJSON.mensagem;
+                        }
+                        showToast(mensagem, 'danger');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 
