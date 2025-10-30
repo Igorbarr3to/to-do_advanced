@@ -4,7 +4,8 @@ require_once('../config/database.php');
 require_once('../src/lib/tarefa.php');
 
 if (!isset($_SESSION['id_usuario'])) {
-    echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário não autenticado.']);
+    header('Location: login.php');
+    exit();
 }
 
 $usuario_nome = $_SESSION['usuario_nome'];
@@ -56,35 +57,55 @@ if (isset($_SESSION['flash_message'])) {
     <main class="container mt-4">
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Adicionar Nova Tarefa</h5>
+                <h5 class="mb-0 text-center">Adicionar Nova Tarefa</h5>
             </div>
             <div class="card-body">
                 <form id="formNovaTarefa" method="POST">
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="titulo" class="form-label">Título</label>
-                            <input type="text" class="form-control" id="titulo" name="titulo" required>
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">Título</label>
+                                <input type="text" class="form-control" id="titulo" name="titulo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="data_limite" class="form-label">Data Limite</label>
+                                <input type="date" class="form-control" id="data_limite" name="data_limite">
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="data_limite" class="form-label">Data Limite</label>
-                            <input type="date" class="form-control" id="data_limite" name="data_limite">
+
+                        <div class="col-8">
+                            <div class="mb-4">
+                                <label for="descricao" class="form-label">Descrição (Opcional)</label>
+                                <textarea class="form-control h-100" id="descricao" name="descricao"></textarea>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-plus-lg"></i> Adicionar Tarefa
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="descricao" class="form-label">Descrição (Opcional)</label>
-                        <textarea class="form-control" id="descricao" name="descricao" rows="2"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Adicionar Tarefa
-                    </button>
                 </form>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Minhas Tarefas</h5>
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+
+                <h5 class="mb-2 mb-md-0">Minhas Tarefas</h5>
+
+                <form id="formFiltroTarefas" class="d-flex flex-column flex-md-row gap-2">
+                    <input type="text" id="filtroBusca" name="busca" class="form-control"
+                        placeholder="Buscar por título...">
+
+                    <select id="filtroStatus" name="filtro_status" class="form-select">
+                        <option value="">Todos os status</option>
+                        <option value="PENDENTE">Pendente</option>
+                        <option value="CONCLUIDA">Concluída</option>
+                    </select>
+                </form>
             </div>
+
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -92,6 +113,7 @@ if (isset($_SESSION['flash_message'])) {
                             <tr>
                                 <th>Status</th>
                                 <th>Título</th>
+                                <th>Descrição</th>
                                 <th>Criada em</th>
                                 <th>Data Limite</th>
                                 <th class="text-center">Ações</th>
@@ -176,14 +198,14 @@ if (isset($_SESSION['flash_message'])) {
                     const toastTitle = document.getElementById('toast-title');
                     const toastBody = document.getElementById('toast-body');
 
-                    toastElement.classList.remove('bg-success-subtle', 'bg-danger-subtle');
+                    toastElement.classList.remove('bg-success', 'bg-danger');
 
                     if (type === 'success') {
                         toastTitle.innerText = 'Sucesso!';
-                        toastElement.classList.add('bg-success-subtle');
+                        toastElement.classList.add('bg-success');
                     } else {
                         toastTitle.innerText = 'Erro!';
-                        toastElement.classList.add('bg-danger-subtle');
+                        toastElement.classList.add('bg-danger');
                     }
 
                     toastBody.innerText = message;
@@ -196,8 +218,22 @@ if (isset($_SESSION['flash_message'])) {
             }
 
             function listarTarefas() {
+
+                let busca = $('#buscaTitulo').val();
+                let status = $('#filtroStatus').val();
+
+                let url = '../src/actions/processa-tarefa.php?acao=listar';
+
+                if (busca) {
+                    url += '&busca=' + encodeURIComponent(busca);
+                }
+
+                if (status) {
+                    url += '&filtro_status=' + encodeURIComponent(status);
+                }
+
                 $.ajax({
-                    url: '../src/actions/processa-tarefa.php?acao=listar',
+                    url: url,
                     type: 'GET',
                     dataType: 'json',
                     success: (response) => {
@@ -206,7 +242,7 @@ if (isset($_SESSION['flash_message'])) {
                             tabelaBody.empty();
 
                             if (response.tarefas.length === 0) {
-                                tabelaBody.html('<tr><td colspan="5" class="text-center">Nenhuma tarefa encontrada. Crie uma nova tarefa!</td></tr>');
+                                tabelaBody.html('<tr><td colspan="6" class="text-center">Nenhuma tarefa encontrada. Crie uma nova tarefa!</td></tr>');
                                 return;
                             }
 
@@ -232,7 +268,7 @@ if (isset($_SESSION['flash_message'])) {
                                 }
 
                                 let statusBadge = (tarefa.status === 'CONCLUIDA') ?
-                                    '<span class="badge bg-success  text-bg-primary">Concluída</span>' :
+                                    '<span class="badge bg-success text-bg-primary">Concluída</span>' :
                                     '<span class="badge text-bg-warning">Pendente</span>';
 
                                 let tituloHtml = (tarefa.status === 'CONCLUIDA') ?
@@ -266,6 +302,11 @@ if (isset($_SESSION['flash_message'])) {
                                 <tr data-tarefa-id="${tarefa.id}">
                                     <td class="align-middle">${statusBadge}</td>
                                     <td class="align-middle">${tituloHtml}</td>
+                                    <td class="text-truncate align-middle" 
+                                        style="max-width: 200px;"
+                                    >
+                                        ${tarefa.descricao}
+                                    </td>
                                     <td class="align-middle">${dataCriacaoFormatada}</td>
                                     <td class="align-middle">${dataLimiteFormatada}</td>
                                     <td class="text-center align-middle d-flex justify-content-center gap-2">
@@ -422,7 +463,7 @@ if (isset($_SESSION['flash_message'])) {
                                         let linhasRestantes = tabelaBody.find('tr').length;
 
                                         if (linhasRestantes === 0) {
-                                            tabelaBody.append('<tr><td colspan="5" class="text-center">Nenhuma tarefa encontrada. Crie uma nova tarefa!</td></tr>');
+                                            tabelaBody.append('<tr><td colspan="6" class="text-center">Nenhuma tarefa encontrada. Crie uma nova tarefa!</td></tr>');
                                         }
                                     });
 
@@ -458,6 +499,19 @@ if (isset($_SESSION['flash_message'])) {
                         window.location.href = 'login.php';
                     }
                 });
+            });
+
+            let debounceTimer;
+            $('#buscaTitulo').on('keyup', function (e) {
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+                    listarTarefas();
+                }, 500)
+            });
+
+            $('#filtroStatus').on('change', function () {
+                listarTarefas()
             });
 
             listarTarefas()

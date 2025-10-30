@@ -10,51 +10,50 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center">
-                        <h3>Crie sua Conta</h3>
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="post" id="formRegistro">
-                            <div class="mb-3">
-                                <input type="text" name="nome" id="nome" placeholder="Seu nome" class="form-control"
-                                    required />
-                            </div>
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center">
+                    <h3>Crie sua Conta</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="formRegistro">
+                        <div class="mb-3">
+                            <input type="text" name="nome" id="nome" placeholder="Seu nome" class="form-control"
+                                required />
+                        </div>
 
-                            <div class="mb-3">
-                                <input type="email" name="email" id="email" class="form-control" placeholder="E-mail"
-                                    required />
-                            </div>
+                        <div class="mb-3">
+                            <input type="email" name="email" id="email" class="form-control" placeholder="E-mail"
+                                required />
+                        </div>
 
-                            <div class="mb-3">
-                                <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha"
-                                    required />
-                            </div>
+                        <div class="mb-3">
+                            <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha"
+                                required />
+                        </div>
 
-                            <div class="mb-3">
-                                <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control"
-                                    placeholder="Confirmar senha" required />
-                            </div>
+                        <div class="mb-3">
+                            <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control"
+                                placeholder="Confirmar senha" required />
+                        </div>
 
-                            <div id="verifica_senha" class="mb-3"></div>
+                        <div id="verifica_senha" class="mb-3"></div>
 
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    Registrar-se!
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <small>Já tem uma conta? <a href="login.php" class="link-light">Faça login aqui</a></small>
-                    </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-100">
+                                Registrar-se!
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <small>Já tem uma conta? <a href="login.php" class="link-light">Faça login aqui</a></small>
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="toast-container position-fixed top-0 center p-3">
         <div id="feedbackToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">

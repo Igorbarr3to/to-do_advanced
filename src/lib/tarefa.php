@@ -11,15 +11,33 @@ function criarTarefa($db, $titulo, $descricao, $data_limite, $id_usuario){
     return true;
 }
 
-function buscarTarefasPorUsuario($db, $id_usuario){
-    $sql = 'SELECT * FROM tarefas WHERE id_usuario = ? ORDER BY data_de_criacao DESC';
+function buscarTarefasPorUsuario($db, $id_usuario, $buscaTitulo = null, $filtro_status = null){
+    $sql = 'SELECT * FROM tarefas WHERE id_usuario = ?';
+    $params = [$id_usuario];
+    $types = "i";
+
+    if(!empty($buscaTitulo)){
+        $sql .= " AND titulo LIKE ?";
+        $params[] = "%" . $buscaTitulo . "%";
+        $types .= "s";
+    }
+
+    if(!empty($filtro_status) && ($filtro_status == 'PENDENTE' || $filtro_status == 'CONCLUIDA')){
+        $sql .= " AND status = ?";
+        $params[] = $filtro_status;
+        $types .= "s";
+    }
+
+    $sql .= " ORDER BY data_de_criacao DESC";
 
     $stmt = mysqli_prepare($db, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $id_usuario);
+
+    if($params){
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+
     mysqli_stmt_execute($stmt);
-
     $resultado = mysqli_stmt_get_result($stmt);
-
     $tarefas = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
 
     return $tarefas;

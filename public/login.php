@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br" data-bs-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,39 +10,35 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center">
-                        <h3>Entre com a sua Conta</h3>
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="post" id="formLogin">
-
-                            <div class="mb-3">
-                                <input type="email" name="email" id="email" class="form-control" placeholder="E-mail"
-                                    required />
-                            </div>
-
-                            <div class="mb-3">
-                                <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha"
-                                    required />
-                            </div>
-
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    Entrar!
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <small>Ainda não tem uma conta? <a href="registro.php" class="link-light">Faça o registro
-                                aqui</a></small>
-                    </div>
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="col-10 col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center">
+                    <h3>Entre com a sua Conta</h3>
                 </div>
+                <div class="card-body">
+                    <form method="post" id="formLogin">
+                        <div class="mb-3">
+                            <input type="email" name="email" id="email" class="form-control" placeholder="E-mail"
+                                required />
+                        </div>
 
+                        <div class="mb-3">
+                            <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha"
+                                required />
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-100">
+                                Entrar!
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <small>Ainda não tem uma conta? <a href="registro.php" class="link-light">Faça o registro
+                            aqui</a></small>
+                </div>
             </div>
         </div>
     </div>
@@ -89,7 +86,7 @@
                 }
             }
 
-            $('#formLogin').on('submit', function(e) {
+            $('#formLogin').on('submit', function (e) {
                 e.preventDefault();
                 let form = $(this);
 
@@ -100,13 +97,13 @@
                     dataType: 'json',
                     success: (response) => {
                         if (response.sucesso) {
-                            showToast(response.mensagem, 'success');  
+                            showToast(response.mensagem, 'success');
                             setTimeout(() => {
                                 window.location.href = 'index.php';
                             }, 1000);
                         }
                     },
-                    error: function(jqXHR) {
+                    error: function (jqXHR) {
                         let mensagem = 'Erro ao processar o login.';
                         if (jqXHR.responseJSON && jqXHR.responseJSON.mensagem) {
                             mensagem = jqXHR.responseJSON.mensagem;

@@ -63,7 +63,10 @@ try {
             break;
 
         case 'listar':
-            $tarefas = buscarTarefasPorUsuario($db, $id_usuario);
+            $buscaTitulo = $_GET['busca'] ?? null;
+            $filtro_status = $_GET['filtro_status'] ?? null;
+
+            $tarefas = buscarTarefasPorUsuario($db, $id_usuario, $buscaTitulo, $filtro_status);
             echo json_encode(['sucesso' => true, 'tarefas' => $tarefas]);
             break;
 
