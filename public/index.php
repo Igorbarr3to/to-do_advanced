@@ -69,7 +69,7 @@ if (isset($_SESSION['flash_message'])) {
                             </div>
                             <div class="mb-3">
                                 <label for="data_limite" class="form-label">Data Limite</label>
-                                <input type="date" class="form-control" id="data_limite" name="data_limite">
+                                <input type="date" class="form-control" id="data_limite" name="data_limite" required>
                             </div>
                         </div>
 
@@ -123,6 +123,8 @@ if (isset($_SESSION['flash_message'])) {
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="card-footer d-flex justify-content-center" id="paginacao-container">
             </div>
         </div>
     </main>
@@ -188,6 +190,8 @@ if (isset($_SESSION['flash_message'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(() => {
+            const tarefasPorPagina = 5;
+
             function showToast(message, type = 'success') {
                 const toastElement = document.getElementById('feedbackToast');
                 if (toastElement) {
@@ -217,21 +221,38 @@ if (isset($_SESSION['flash_message'])) {
                 }
             }
 
-            function listarTarefas() {
+            function renderizarPaginacao(totalTarefas, paginaAtual) {
+                const container = $('#paginacao-container');
+                container.empty();
+
+                const totalPaginas = Math.ceil(totalTarefas / tarefasPorPagina);
+
+                if (totalPaginas <= 1) return;
+
+                let paginacaoHtml = '<ul class="pagination">';
+
+                for (let i = 1; i <= totalPaginas; i++) {
+                    let activeClass = (i === paginaAtual) ? 'active' : '';
+                    paginacaoHtml += `
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `;
+                }
+
+                paginacaoHtml += '</ul>';
+                container.html(paginacaoHtml);
+            }
+
+            function listarTarefas(page = 1) {
 
                 let busca = $('#buscaTitulo').val();
                 let status = $('#filtroStatus').val();
 
-                let url = '../src/actions/processa-tarefa.php?acao=listar';
-
-                if (busca) {
-                    url += '&busca=' + encodeURIComponent(busca);
-                }
-
-                if (status) {
-                    url += '&filtro_status=' + encodeURIComponent(status);
-                }
-
+                let url = `../src/actions/processa-tarefa.php?acao=listar&page=${page}`;
+                if (busca) url += '&busca=' + encodeURIComponent(busca);
+                if (status) url += '&filtro_status=' + encodeURIComponent(status);
+                
                 $.ajax({
                     url: url,
                     type: 'GET',
@@ -264,6 +285,7 @@ if (isset($_SESSION['flash_message'])) {
                                     const parts = dataParts.split('-');
                                     if (parts.length === 3) {
                                         dataLimiteFormatada = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                                        dataLimiteModal = dataParts;
                                     }
                                 }
 
@@ -288,7 +310,7 @@ if (isset($_SESSION['flash_message'])) {
                                         data-titulo="${tarefa.titulo}"
                                         data-descricao="${tarefa.descricao}"
                                         data-status="${tarefa.status}"
-                                        data-data_limite="${tarefa.data_limite}" 
+                                        data-data_limite="${dataLimiteModal}" 
                                         title="Editar">
                                 <i class="bi bi-pencil-fill"></i>
                                 </button>`;
@@ -298,7 +320,7 @@ if (isset($_SESSION['flash_message'])) {
                                     <i class="bi bi-trash-fill"></i>
                                 </a>`;
 
-                                let htmlDaLinha = `
+                                let htmlLinha = `
                                 <tr data-tarefa-id="${tarefa.id}">
                                     <td class="align-middle">${statusBadge}</td>
                                     <td class="align-middle">${tituloHtml}</td>
@@ -316,10 +338,10 @@ if (isset($_SESSION['flash_message'])) {
                                     </td>
                                 </tr>
                             `;
-
-                                tabelaBody.append(htmlDaLinha);
+                                tabelaBody.append(htmlLinha);
                             });
                         }
+                        renderizarPaginacao(response.total_tarefas, response.pagina_atual);
                     },
                     error: () => {
                         showToast('Erro ao carregar a lista de tarefas.', 'danger');
@@ -373,7 +395,7 @@ if (isset($_SESSION['flash_message'])) {
                         if (response.sucesso) {
                             showToast(response.mensagem, 'success');
                             form[0].reset();
-                            listarTarefas();
+                            listarTarefas(1);
                         } else {
                             showToast(response.mensagem, 'danger');
                         }
@@ -514,7 +536,13 @@ if (isset($_SESSION['flash_message'])) {
                 listarTarefas()
             });
 
-            listarTarefas()
+            $('#paginacao-container').on('click', '.page-link', function (e) {
+                e.preventDefault();
+                let page = $(this).data('page');
+                listarTarefas(page);
+            });
+
+            listarTarefas(1)
         })
     </script>
 </body>

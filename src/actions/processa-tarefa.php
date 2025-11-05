@@ -8,7 +8,8 @@ if (!isset($_SESSION['id_usuario'])) {
     http_response_code(401);
     echo json_encode(['sucesso' => false, 'mensagem' => 'Você precisa estar logado para realizar esta ação.']);
     exit;
-};
+}
+;
 
 $id_usuario = $_SESSION['id_usuario'];
 
@@ -65,9 +66,17 @@ try {
         case 'listar':
             $buscaTitulo = $_GET['busca'] ?? null;
             $filtro_status = $_GET['filtro_status'] ?? null;
+            $page = (int) ($_GET['page'] ?? 1);
+            $limit = 5;
 
-            $tarefas = buscarTarefasPorUsuario($db, $id_usuario, $buscaTitulo, $filtro_status);
-            echo json_encode(['sucesso' => true, 'tarefas' => $tarefas]);
+            $resultado = buscarTarefasPorUsuario($db, $id_usuario, $buscaTitulo, $filtro_status, $page, $limit);
+            echo json_encode([
+                'sucesso' => true, 
+                'tarefas' => $resultado['tarefas'],
+                'total_tarefas' => $resultado['total_tarefas'],
+                'pagina_atual' => $page,
+                'limit' => $limit
+            ]);
             break;
 
         default:
