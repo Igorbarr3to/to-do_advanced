@@ -10,12 +10,18 @@ O layout é responsivo e se adapta a celulares, tablets e desktops.
 ### Telas do Sistema
 
 * **Login (`login.php`):** A porta de entrada do sistema. Acesse com e-mail e senha.
-* **Cadastro (`cadastro.php`):** Tela para criação de novos usuários, com validação de senha em tempo real.
+![Tela de login](./tela_login.png)
+
+* **Registro (`registro.php`):** Tela para criação de novos usuários, com validação de senha em tempo real.
+![Tela de registro](./tela_registro.png)
+
 * **Dashboard (`index.php`):** O centro de comando e tela principal. Ela é dividida em:
     * Formulário de Adição de Tarefas.
     * Formulário de Filtros (Busca por título e status).
     * Lista de Tarefas (a tabela principal).
     * Paginação (se houver muitas tarefas).
+![Dashboard](./dashboard.png)
+
 
 ## 2. Passo a Passo para Utilização 
 
@@ -23,8 +29,8 @@ Siga este fluxo para usar o sistema.
 
 ### A. Autenticação
 
-1.  **Cadastro:** Se for seu primeiro acesso, clique em "Faça o registro aqui" na tela de login. Preencha seu nome, e-mail e senha.
-2.  **Login:** Após o cadastro, use seu e-mail e senha para entrar. Você será levado ao Dashboard.
+1.  **Registro:** Se for seu primeiro acesso, clique em "Faça o registro aqui" na tela de login. Preencha seu nome, e-mail e senha.
+2.  **Login:** Após o registro, use seu e-mail e senha para entrar. Você será levado ao Dashboard.
 3.  **Logout:** Para sair com segurança, clique no botão "Sair" no menu superior.
 
 ### B. Gerenciando Tarefas (No Dashboard)

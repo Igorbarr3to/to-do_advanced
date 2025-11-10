@@ -23,7 +23,7 @@ if (isset($_SESSION['flash_message'])) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -95,7 +95,7 @@ if (isset($_SESSION['flash_message'])) {
                 <h5 class="mb-2 mb-md-0">Minhas Tarefas</h5>
 
                 <form id="formFiltroTarefas" class="d-flex flex-column flex-md-row gap-2">
-                    <input type="text" id="filtroBusca" name="busca" class="form-control"
+                    <input type="text" id="buscaTitulo" name="busca" class="form-control"
                         placeholder="Buscar por título...">
 
                     <select id="filtroStatus" name="filtro_status" class="form-select">
